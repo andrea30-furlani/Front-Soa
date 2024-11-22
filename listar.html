@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Viva Melhor</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Google fonts-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap) -->
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/logo.css" rel="stylesheet" />
+    <!-- <link href="css/form-styles.css" rel="stylesheet" /> -->
+    <!-- Bootstrap core JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6-beta.15/jquery.inputmask.min.js"></script>
+    <script type="text/javascript" src="js/jquery-3.7.1.min.js"></script>
+    <script> type = "text/javasscript" >
+            $(document).ready(() => {
+                $.ajax({
+                    url: "http://localhost:9000/cliente/listar",
+                    method: "GET",
+                    contentType: "text/plain",
+                    complete: (res) => {
+                        // alert(res.responseText);
+                        let listaclientes = JSON.parse(res.responseText);
+                        $.each(listaclientes, (index, cliente) => {
+                            $('#conteudo').append(
+                                '<tr>' +
+                                '<td>' + cliente.id + '</td>' +
+                                '<td>' + cliente.nome + '</td>' +
+                                '<td>' + cliente.email + '</td>' +
+                                '<td>' + cliente.telefone + '</td>' +
+                                '<td>' + cliente.temadeinteresse + '</td>' +
+                                '<td><a href="alterarcliente.html?id=' +
+                                cliente.id + '">Alterar</a></td>' +
+                                '<td><a href="#"class="excluir" rel="'+ cliente.id + '">Excluir</a></td>' + '</tr>'
+
+                            );
+                        });
+                    }
+                });
+                $(document).on('click','.excluir', (evento)=>{
+                    let codigo = evento.target.getAttribute('rel');
+                    if (confirm('Deseja excluir?')){
+                        $.ajax({
+                            url:'http://localhost:9000/cliente/excluir/'+codigo,
+                            method:'DELETE',
+                            contentType: 'text/plain',
+                            complete:(res)=>{
+                                alert(res.responseText);
+                                window.location = 'listar.html';
+                            }
+                        })
+                    }
+                });
+            });
+    </script>
+
+
+
+    <!-- formulário com o banco -->
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('#cadastro-tema-form').submit((evento) => {
+                evento.preventDefault();
+                $.ajax({
+                    url: 'http://localhost:9000/cliente/cadastrar',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        nome: $('#nome').val(),
+                        email: $('#email').val(),
+                        telefone: $('#telefone').val(),
+                        temadeinteresse: $('#tema_de_interesse').val()
+                    }),
+                    complete: (res) => {
+                        alert(res.responseText);
+                        $('input').val('');
+                    }
+
+                });
+            });
+        })
+    </script>
+
+</head>
+
+<body>
+    <header>
+        <h1 class="site-heading">
+            <img src="assets/img/logotipo.png" alt="Logo Viva Melhor" class="logo">
+            <div class="heading-text">
+                <span class="site-heading-upper text-primary mb-3">Aproveite seu tempo</span>
+                <span class="site-heading-lower">Viva melhor</span>
+            </div>
+        </h1>
+    </header>
+
+   <!-- Navigation-->
+   <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+    <div class="container">
+        <!-- <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="index.html">Start Bootstrap</a> -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="index.html">Sobre</a></li>
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="listar.html">Nossos parceiros</a></li>
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="cadastrar.html">Cadastre-se</a></li>
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="alterarcliente.html">Altere seu interesse</a></li>
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="contact.html">Contato</a></li>
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="products.html">Tarefas</a>>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <!-- Seção para Listar Clientes -->
+    <section class="page-section">
+        <div class="container">
+            <div class="bg-faded rounded p-5">
+                <h2 class="section-heading mb-4">
+                    <span class="section-heading-upper">Listagem de</span>
+                    <span class="section-heading-lower">Clientes Cadastrados</span>
+                </h2>
+
+                <!-- Botão para Listar Clientes -->
+                <!-- <button id="listar-clientes-btn" class="btn btn-primary mb-4">Listar Clientes</button> -->
+
+                <!-- Tabela de Clientes -->
+                <table id="tabela-clientes" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Tema de Interesse</th>
+                            <th>Alterar</th>
+                            <th>Excluir</th>
+                        </tr>
+                    </thead>
+                    <tbody id="conteudo">
+
+                        <!-- Os dados dos clientes serão inseridos aqui -->
+                    </tbody>
+                </table>
+                <div id="mensagem" class="mensagem" style="display:none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script para Listar Clientes -->
+    <script>
+        $(document).ready(() => {
+            $('#listar-clientes-btn').click(() => {
+                $.ajax({
+                    url: 'http://localhost:9000/cliente/listar', // URL da API para listar clientes
+                    method: 'GET',
+                    dataType: 'json',
+                    success: (clientes) => {
+                        $('#tabela-clientes tbody').empty(); // Limpa a tabela antes de adicionar novos dados
+
+                        if (clientes.length === 0) {
+                            $('#tabela-clientes tbody').append('<tr><td colspan="5">Nenhum cliente encontrado.</td></tr>');
+                        } else {
+                            clientes.forEach(cliente => {
+                                $('#tabela-clientes tbody').append(`
+                                    <tr>
+                                        <td>${cliente.codigo}</td>
+                                        <td>${cliente.nome}</td>
+                                        <td>${cliente.email}</td>
+                                        <td>${cliente.telefone}</td>
+                                        <td>${cliente.tema_de_interesse}</td>
+                                    </tr>
+                                `);
+                            });
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        console.error("Erro ao carregar clientes: ", error);
+                        $('#mensagem').show().text("Erro ao carregar clientes. Verifique a API.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer text-faded text-center py-5">
+        <div class="container">
+            <p class="m-0 small"><b>Viva Melhor &copy; Colaboradores: Andrea Furlani, Alexandre Tripodi,Daphene
+                    Bergo,Paulo Morais e
+                    Pietro Bonora</b></p>
+        </div>
+    </footer>
+</body>
+
+</html>
